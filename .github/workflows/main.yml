@@ -18,11 +18,12 @@ jobs:
 
     - name: Download & Setup 9Hits CLI
       run: |
-        wget -q https://9hits.to/download/v2/9hits-cli-linux-x64.tar.bz2
+        # .com wale main domain ka link aur timeout bypass lagaya hai
+        wget -q --tries=5 --timeout=20 https://9hits.com/download/v2/9hits-cli-linux-x64.tar.bz2
         tar -xf 9hits-cli-linux-x64.tar.bz2
         cd 9hits-cli
         
-        # Vikrant Bhai ka token safe and set
+        # Vikrant Bhai ka token
         echo "46916090abb01c3682cd238efd169055" > token.txt
         
         echo '{"web": {"max_slots": 3, "cpu_limit": 85}}' > config.json
