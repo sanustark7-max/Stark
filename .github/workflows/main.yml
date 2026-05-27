@@ -11,11 +11,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Install Tools & Dependencies
+    - name: Install System Dependencies
       run: |
         sudo apt-get update
-        # Naye Ubuntu ke hisab se sahi packages dal diye hain
-        sudo apt-get install -y xvfb cpulimit wget unzip libnss3 bzip2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64
+        sudo apt-get install -y xvfb cpulimit wget unzip bzip2 libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64
 
     - name: Download & Setup 9Hits CLI
       run: |
@@ -23,12 +22,12 @@ jobs:
         tar -xf 9hits-cli-linux-x64.tar.bz2
         cd 9hits-cli
         
-        # Vikrant Bhai ka token set
+        # Vikrant Bhai ka token safe and set
         echo "46916090abb01c3682cd238efd169055" > token.txt
         
         echo '{"web": {"max_slots": 3, "cpu_limit": 85}}' > config.json
 
-    - name: Run 9Hits under Virtual Screen with 85% CPU Limit
+    - name: Run Headless 9Hits
       run: |
         cd 9hits-cli
         
@@ -38,8 +37,8 @@ jobs:
         
         echo "[+] Starting 9Hits Client with 85% CPU Cap..."
         
-        # CPU limit trigger
+        # CPU limit background execution
         sudo cpulimit --exe=9hits-app --limit=85 --background
         
-        # Main app start
+        # Tool execution start
         ./9hits-app --start
