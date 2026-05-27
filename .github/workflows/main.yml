@@ -1,49 +1,31 @@
-name: Vikrant Headless Traffic Runner
+name: Vikrant Traffmonetizer Runner
 
 on:
   workflow_dispatch:
 
 jobs:
-  run-traffic:
+  run-tm:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install System Dependencies
+    - name: Launch Traffmonetizer
       run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb cpulimit wget unzip bzip2 libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64 nodejs npm
-
-    - name: Setup Alternative Headless Runner
-      run: |
-        # 9Hits server block bypass karne ke liye puppeteer/core runner initialize kar rahe hain
-        mkdir -p 9hits-cli
-        cd 9hits-cli
-        npm install jh-9hits-cli || true
+        # Token set kar diya hai
+        TOKEN="cR/xpR+WnmdgJlvsQYaVPAGs4fzW6MGLv+FcvXM4WYg="
         
-        # Vikrant Bhai ka token configuration file me write ho raha hai
-        echo "46916090abb01c3682cd238efd169055" > token.txt
-        echo '{"web": {"max_slots": 3, "cpu_limit": 85}}' > config.json
+        echo "[*] Starting Traffmonetizer..."
+        curl -L https://github.com/traffmonetizer/cli/releases/latest/download/traffmonetizer-cli-linux-amd64 -o tm
+        chmod +x tm
         
-        # Ek execution fallback dummy file bana rahe hain agar unka binary fail ho toh node run kare
-        echo "console.log('Bypassing official binary restriction... Launching core web engine');" > app.js
-
-    - name: Run Headless 9Hits
-      run: |
-        cd 9hits-cli
+        # Background process
+        nohup ./tm start accept --token $TOKEN > tm.log 2>&1 &
         
-        # Virtual screen start
-        Xvfb :99 -screen 0 1024x768x16 &
-        export DISPLAY=:99
+        echo "[+] Traffmonetizer is RUNNING!"
+        sleep 10
+        cat tm.log
         
-        echo "[+] Bypassing 9Hits Server Firewall... Starting Client with 85% CPU Cap..."
-        
-        # Safe execution check
-        sudo cpulimit --exe=node --limit=85 --background || true
-        
-        # Starting alternative script execution
-        node app.js &
-        sleep 5
-        echo "[+] System online. Points session started successfully."
+        # Session zinda rakhne ke liye sleep
+        sleep 21600
