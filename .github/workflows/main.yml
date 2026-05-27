@@ -13,19 +13,18 @@ jobs:
 
     - name: Launch Traffmonetizer
       run: |
-        # Token set kar diya hai
         TOKEN="cR/xpR+WnmdgJlvsQYaVPAGs4fzW6MGLv+FcvXM4WYg="
         
-        echo "[*] Starting Traffmonetizer..."
-        curl -L https://github.com/traffmonetizer/cli/releases/latest/download/traffmonetizer-cli-linux-amd64 -o tm
-        chmod +x tm
+        echo "[*] Downloading Traffmonetizer..."
+        # -L follow redirect, -s silent, -o output
+        curl -sL https://github.com/traffmonetizer/cli/releases/latest/download/traffmonetizer-cli-linux-amd64 -o tm
         
-        # Background process
-        nohup ./tm start accept --token $TOKEN > tm.log 2>&1 &
+        # Binary execution fix: ensure file is executable
+        chmod +x ./tm
         
-        echo "[+] Traffmonetizer is RUNNING!"
+        echo "[+] Starting Traffmonetizer..."
+        # Direct execution without nohup for debugging to see if it starts
+        ./tm start accept --token $TOKEN
+        
+        # Agar error aaye toh status check
         sleep 10
-        cat tm.log
-        
-        # Session zinda rakhne ke liye sleep
-        sleep 21600
