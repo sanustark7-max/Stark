@@ -14,7 +14,8 @@ jobs:
     - name: Install Tools & Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y xvfb cpulimit wget unzip libgconf-2-4 libnss3 bzip2
+        # Naye Ubuntu ke hisab se sahi packages dal diye hain
+        sudo apt-get install -y xvfb cpulimit wget unzip libnss3 bzip2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64
 
     - name: Download & Setup 9Hits CLI
       run: |
@@ -22,7 +23,7 @@ jobs:
         tar -xf 9hits-cli-linux-x64.tar.bz2
         cd 9hits-cli
         
-        # Vikrant Bhai ka token automatic set
+        # Vikrant Bhai ka token set
         echo "46916090abb01c3682cd238efd169055" > token.txt
         
         echo '{"web": {"max_slots": 3, "cpu_limit": 85}}' > config.json
