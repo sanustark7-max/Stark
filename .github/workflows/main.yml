@@ -1,4 +1,4 @@
-name: Vikrant Traffmonetizer Runner
+name: Vikrant Traffmonetizer Final
 
 on:
   workflow_dispatch:
@@ -6,23 +6,20 @@ on:
 jobs:
   run-tm:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install & Launch Traffmonetizer
-      run: |
-        # Official NPM package se direct install ho raha hai
-        npm install -g traffmonetizer
-        
-        # Token
-        TOKEN="cR/xpR+WnmdgJlvsQYaVPAGs4fzW6MGLv+FcvXM4WYg="
-        
-        echo "[+] Starting Traffmonetizer via NPM..."
-        traffmonetizer start accept --token $TOKEN
-        
-        # Session zinda rakhne ke liye
-        sleep 21600
+      - name: Setup & Run
+        run: |
+          TOKEN="cR/xpR+WnmdgJlvsQYaVPAGs4fzW6MGLv+FcvXM4WYg="
+          
+          # Official Linux binary download
+          wget https://get.traffmonetizer.com/linux/amd64/traffmonetizer -O tm
+          
+          # Permission set karna zaroori hai
+          chmod +x ./tm
+          
+          echo "[+] Starting engine..."
+          # Background me chalane ke liye
+          ./tm start accept --token $TOKEN &
+          
+          # GitHub action ko active rakhne ke liye sleep
+          sleep 21600
