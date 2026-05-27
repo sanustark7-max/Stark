@@ -1,7 +1,7 @@
 name: Vikrant Headless Traffic Runner
 
 on:
-  workflow_dispatch: # Isse tum manually "Run Workflow" par click karke start kar sakte ho
+  workflow_dispatch:
 
 jobs:
   run-traffic:
@@ -14,35 +14,31 @@ jobs:
     - name: Install Tools & Dependencies
       run: |
         sudo apt-get update
-        # xvfb virtual screen ke liye aur cpulimit CPU use control karne ke liye
-        sudo apt-get install -y xvfb cpulimit wget unzip libgconf-2-4 libnss3
+        sudo apt-get install -y xvfb cpulimit wget unzip libgconf-2-4 libnss3 bzip2
 
     - name: Download & Setup 9Hits CLI
       run: |
-        # 9Hits ka official Linux 64-bit CLI tool download ho raha hai
         wget -q https://9hits.to/download/v2/9hits-cli-linux-x64.tar.bz2
         tar -xf 9hits-cli-linux-x64.tar.bz2
         cd 9hits-cli
         
-        # YAHAN APNA TOKEN DALO: token.txt file banti hai jisme tumhara token hota hai
+        # Vikrant Bhai ka token automatic set
         echo "46916090abb01c3682cd238efd169055" > token.txt
         
-        # Browser automatic configuration system setup
         echo '{"web": {"max_slots": 3, "cpu_limit": 85}}' > config.json
 
     - name: Run 9Hits under Virtual Screen with 85% CPU Limit
       run: |
         cd 9hits-cli
         
-        # 1. Sabse pehle ek nakli/virtual screen background me shuru karte hain
+        # Virtual screen start
         Xvfb :99 -screen 0 1024x768x16 &
         export DISPLAY=:99
         
-        print("\n[+] Starting 9Hits Client with 85% CPU Cap...\n")
+        echo "[+] Starting 9Hits Client with 85% CPU Cap..."
         
-        # 2. cpulimit tool ka use karke 9hits-app ko zabardasti 85% par bandh dete hain
-        # --limit=85 ka matlab yeh 85% se upar ek point bhi nahi jane dega
+        # CPU limit trigger
         sudo cpulimit --exe=9hits-app --limit=85 --background
         
-        # 3. Ab main 9Hits tool ko start karte hain
+        # Main app start
         ./9hits-app --start
